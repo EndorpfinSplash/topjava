@@ -49,3 +49,4 @@ public class UserMealsUtil {
         return userMealWithExceeds;
     }
 }
+// Оцените Time complexity вашего алгоритма: моя оценка О(2*N) т.к. в решении задействовано 2 foreach цикла.
