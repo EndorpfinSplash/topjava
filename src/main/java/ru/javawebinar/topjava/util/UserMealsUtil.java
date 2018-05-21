@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -22,19 +23,29 @@ public class UserMealsUtil {
         getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
 //        .toLocalDate();
 //        .toLocalTime();
+        System.out.println(getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
     }
 
     public static List<UserMealWithExceed> getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
         List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
 
-        Map<LocalDate, Integer> mapSumCalories = new HashMap<>();
+//        Map<LocalDate, Integer> mapSumCalories = new HashMap<>();
+//
+//        for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
+//            UserMeal next = mealIterator.next();
+//            Integer agregatedCaloriesPerDay = mapSumCalories.getOrDefault(next.getDateTime().toLocalDate(),0);
+//            mapSumCalories.put(next.getDateTime().toLocalDate(), agregatedCaloriesPerDay + next.getCalories());
+//        }
 
-        for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
-            UserMeal next = mealIterator.next();
-            Integer agregatedCaloriesPerDay = mapSumCalories.getOrDefault(next.getDateTime().toLocalDate(),0);
-            mapSumCalories.put(next.getDateTime().toLocalDate(), agregatedCaloriesPerDay + next.getCalories());
-        }
+        Map<LocalDate, Integer> mapSumCalories = mealList.stream()
+                .collect(
+                        Collectors.toMap(
+                                m -> m.getDateTime().toLocalDate(),
+                                m -> m.getCalories(),
+                                (m1, m2) -> m1 + m2
+                        )
+                );
 
         for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
             UserMeal next = mealIterator.next();
@@ -46,7 +57,7 @@ public class UserMealsUtil {
                 );
             }
         }
-        return userMealWithExceeds == null? Collections.emptyList(): userMealWithExceeds;
+        return userMealWithExceeds == null ? Collections.emptyList() : userMealWithExceeds;
     }
 }
 // Оцените Time complexity вашего алгоритма: моя оценка О(2*N) т.к. в решении задействовано 2 foreach цикла по N элементам
