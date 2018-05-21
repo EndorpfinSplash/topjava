@@ -28,16 +28,6 @@ public class UserMealsUtil {
 
     public static List<UserMealWithExceed> getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
-        List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
-
-//        Map<LocalDate, Integer> mapSumCalories = new HashMap<>();
-//
-//        for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
-//            UserMeal next = mealIterator.next();
-//            Integer agregatedCaloriesPerDay = mapSumCalories.getOrDefault(next.getDateTime().toLocalDate(),0);
-//            mapSumCalories.put(next.getDateTime().toLocalDate(), agregatedCaloriesPerDay + next.getCalories());
-//        }
-
         Map<LocalDate, Integer> mapSumCalories = mealList.stream()
                 .collect(
                         Collectors.toMap(
@@ -47,17 +37,14 @@ public class UserMealsUtil {
                         )
                 );
 
-        for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
-            UserMeal next = mealIterator.next();
-            if (TimeUtil.isBetween(next.getDateTime().toLocalTime(), startTime, endTime)) {
-                userMealWithExceeds.add(new UserMealWithExceed(
-                        next.getDateTime(),
-                        next.getDescription(), next.getCalories(),
-                        mapSumCalories.get(next.getDateTime().toLocalDate()) > caloriesPerDay)
+        List<UserMealWithExceed> userMealWithExceeds = mealList.stream()
+                .filter(m -> TimeUtil.isBetween(m.getDateTime().toLocalTime(), startTime, endTime))
+                .map(m -> new UserMealWithExceed(m.getDateTime(), m.getDescription(), m.getCalories(), mapSumCalories.get(m.getDateTime().toLocalDate()) > caloriesPerDay))
+                .collect(
+                        Collectors.toList()
                 );
-            }
-        }
+
         return userMealWithExceeds == null ? Collections.emptyList() : userMealWithExceeds;
     }
 }
-// Оцените Time complexity вашего алгоритма: моя оценка О(2*N) т.к. в решении задействовано 2 foreach цикла по N элементам
+// Оцените Time complexity вашего алгоритма: моя оценка О(N) т.к. в решении задействованы foreach циклы по N элементам
