@@ -36,12 +36,6 @@ public class UserMealsUtil {
             mapSumCalories.put(localDateForMeal, sumCaloriesPerDay);
         }
 
-/*        List<UserMealWithExceed> userMealWithExceeds = mealList.stream()
-                .filter(m -> TimeUtil.isBetween(m.getDateTime().toLocalTime(), startTime, endTime))
-                .map(m -> new UserMealWithExceed(m.getDateTime(), m.getDescription(), m.getCalories(), mapSumCalories.get(m.getDateTime().toLocalDate()) > caloriesPerDay))
-                .collect(
-                        Collectors.toList()
-                );*/
         List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
         for (UserMeal userMeal : mealList) {
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
