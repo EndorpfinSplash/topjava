@@ -38,17 +38,6 @@ public class UserMealsUtil {
 
         List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
 
-        for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
-            UserMeal next = mealIterator.next();
-            if (TimeUtil.isBetween(next.getDateTime().toLocalTime(), startTime, endTime)) {
-                userMealWithExceeds.add(new UserMealWithExceed(
-                        next.getDateTime(),
-                        next.getDescription(), next.getCalories(),
-                        mapSumCalories.get(next.getDateTime().toLocalDate()) > caloriesPerDay)
-                );
-            }
-        }
-
         for (UserMeal userMeal : mealList) {
             LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
