@@ -20,13 +20,13 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 511)
         );
         getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
+        System.out.println(getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
+
 //        .toLocalDate();
 //        .toLocalTime();
     }
 
     public static List<UserMealWithExceed> getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
-
-        List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
 
         Map<LocalDate, Integer> mapSumCalories = new HashMap<>();
 
@@ -36,6 +36,8 @@ public class UserMealsUtil {
             mapSumCalories.put(localDateForMeal, userMeal.getCalories() + sumCaloriesPerDay);
         }
 
+        List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
+
         for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
             UserMeal next = mealIterator.next();
             if (TimeUtil.isBetween(next.getDateTime().toLocalTime(), startTime, endTime)) {
@@ -43,6 +45,20 @@ public class UserMealsUtil {
                         next.getDateTime(),
                         next.getDescription(), next.getCalories(),
                         mapSumCalories.get(next.getDateTime().toLocalDate()) > caloriesPerDay)
+                );
+            }
+        }
+
+        for (UserMeal userMeal : mealList) {
+            LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
+            if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
+                userMealWithExceeds.add(
+                        new UserMealWithExceed(
+                                userMeal.getDateTime(),
+                                userMeal.getDescription(),
+                                userMeal.getCalories(),
+                                mapSumCalories.get(localDateForMeal) > caloriesPerDay
+                        )
                 );
             }
         }
