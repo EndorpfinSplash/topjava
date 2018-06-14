@@ -30,10 +30,10 @@ public class UserMealsUtil {
 
         Map<LocalDate, Integer> mapSumCalories = new HashMap<>();
 
-        for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
-            UserMeal next = mealIterator.next();
-            Integer agregatedCaloriesPerDay = mapSumCalories.getOrDefault(next.getDateTime().toLocalDate(),0);
-            mapSumCalories.put(next.getDateTime().toLocalDate(), agregatedCaloriesPerDay + next.getCalories());
+        for (UserMeal userMeal : mealList) {
+            LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
+            Integer sumCaloriesPerDay = mapSumCalories.getOrDefault(localDateForMeal, 0);
+            mapSumCalories.put(localDateForMeal, userMeal.getCalories() + sumCaloriesPerDay);
         }
 
         for (Iterator<UserMeal> mealIterator = mealList.iterator(); mealIterator.hasNext(); ) {
