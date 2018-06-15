@@ -3,6 +3,7 @@ package ru.javawebinar.topjava.util;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -36,8 +37,14 @@ public class UserMealsUtil {
             mapSumCalories.put(localDateForMeal, userMeal.getCalories() + sumCaloriesPerDay);
         }
 
-        List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
 
+        for (UserMeal userMeal : mealList) {
+            LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
+            Integer sumCaloriesPerDay = userMeal.getCalories() + mapSumCalories.getOrDefault(localDateForMeal, 0);
+            mapSumCalories.put(localDateForMeal, sumCaloriesPerDay);
+        }
+
+        List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
         for (UserMeal userMeal : mealList) {
             LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
@@ -51,7 +58,8 @@ public class UserMealsUtil {
                 );
             }
         }
-        return userMealWithExceeds == null? Collections.emptyList(): userMealWithExceeds;
+
+        return userMealWithExceeds == null ? Collections.emptyList() : userMealWithExceeds;
     }
 }
-// Оцените Time complexity вашего алгоритма: моя оценка О(2*N) т.к. в решении задействовано 2 foreach цикла по N элементам
+// Оцените Time complexity вашего алгоритма: моя оценка О(N) т.к. в решении задействованы foreach циклы по N элементам
