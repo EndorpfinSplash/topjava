@@ -37,13 +37,6 @@ public class UserMealsUtil {
             mapSumCalories.put(localDateForMeal, userMeal.getCalories() + sumCaloriesPerDay);
         }
 
-
-        for (UserMeal userMeal : mealList) {
-            LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
-            Integer sumCaloriesPerDay = userMeal.getCalories() + mapSumCalories.getOrDefault(localDateForMeal, 0);
-            mapSumCalories.put(localDateForMeal, sumCaloriesPerDay);
-        }
-
         List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
         for (UserMeal userMeal : mealList) {
             LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
