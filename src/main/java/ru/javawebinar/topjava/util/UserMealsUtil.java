@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UserMealsUtil {
     public static void main(String[] args) {
@@ -36,7 +37,7 @@ public class UserMealsUtil {
             if (!mapExceededDays.containsKey(localDateForMeal)) {
                 mapExceededDays.put(localDateForMeal, new MutableBoolean(false));
             }
-            if (mapSumCaloriesPerDay.get(localDateForMeal) > caloriesPerDay) {
+            else if (mapSumCaloriesPerDay.get(localDateForMeal) > caloriesPerDay) {
                 mapExceededDays.get(localDateForMeal).setValue(true);
             }
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
@@ -52,6 +53,28 @@ public class UserMealsUtil {
         }
         return userMealWithExceeds;
     }
+
+//    public static List<UserMealWithExceed> getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+//
+//        Map<LocalDate, Integer> mapSumCalories = mealList.stream()
+//                .collect(
+//                        Collectors.toMap(
+//                                m -> m.getDateTime().toLocalDate(),
+//                                m -> m.getCalories(),
+//                                (m1, m2) -> m1 + m2
+//                        )
+//                );
+//
+//        List<UserMealWithExceed> userMealWithExceeds = mealList.stream()
+//
+//                .filter(m -> TimeUtil.isBetween(m.getDateTime().toLocalTime(), startTime, endTime))
+//                .map(m -> new UserMealWithExceed(m.getDateTime(), m.getDescription(), m.getCalories(), new MutableBoolean(false))
+//                .collect(
+//                        Collectors.toList()
+//                );
+//
+//        return userMealWithExceeds == null ? Collections.emptyList() : userMealWithExceeds;
+//    }
 
 }
 // Оцените Time complexity вашего алгоритма: моя оценка О(N) т.к. в решении задействованы foreach циклы по N элементам
