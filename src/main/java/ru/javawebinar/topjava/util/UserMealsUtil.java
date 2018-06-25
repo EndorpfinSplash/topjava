@@ -37,7 +37,8 @@ public class UserMealsUtil {
             if (!mapExceededDays.containsKey(localDateForMeal)) {
                 mapExceededDays.put(localDateForMeal, new MutableBoolean(false));
             }
-            else if (mapSumCaloriesPerDay.get(localDateForMeal) > caloriesPerDay) {
+
+            if (mapSumCaloriesPerDay.get(localDateForMeal) > caloriesPerDay) {
                 mapExceededDays.get(localDateForMeal).setValue(true);
             }
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
