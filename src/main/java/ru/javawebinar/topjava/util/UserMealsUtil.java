@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.util;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import ru.javawebinar.topjava.model.UserMeal;
 import ru.javawebinar.topjava.model.UserMealWithExceed;
 
@@ -20,39 +21,37 @@ public class UserMealsUtil {
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 13, 0), "Обед", 500),
                 new UserMeal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 511)
         );
-        getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000);
-        System.out.println(getFilteredWithExceeded(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
-
-//        .toLocalDate();
-//        .toLocalTime();
+        System.out.println(getFilteredWithExceededOneCycle(mealList, LocalTime.of(7, 0), LocalTime.of(12, 0), 2000));
     }
 
-    public static List<UserMealWithExceed> getFilteredWithExceeded(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
+    public static List<UserMealWithExceed> getFilteredWithExceededOneCycle(List<UserMeal> mealList, LocalTime startTime, LocalTime endTime, int caloriesPerDay) {
 
-        Map<LocalDate, Integer> mapSumCalories = new HashMap<>();
-
-        for (UserMeal userMeal : mealList) {
-            LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
-            Integer sumCaloriesPerDay = mapSumCalories.getOrDefault(localDateForMeal, 0);
-            mapSumCalories.put(localDateForMeal, userMeal.getCalories() + sumCaloriesPerDay);
-        }
-
+        Map<LocalDate, Integer> mapSumCaloriesPerDay = new HashMap<>();
+        Map<LocalDate, MutableBoolean> mapExceededDays = new HashMap<>();
         List<UserMealWithExceed> userMealWithExceeds = new ArrayList<>();
+
         for (UserMeal userMeal : mealList) {
             LocalDate localDateForMeal = userMeal.getDateTime().toLocalDate();
+            mapSumCaloriesPerDay.put(localDateForMeal, userMeal.getCalories() + mapSumCaloriesPerDay.getOrDefault(localDateForMeal, 0));
+            if (!mapExceededDays.containsKey(localDateForMeal)) {
+                mapExceededDays.put(localDateForMeal, new MutableBoolean(false));
+            }
+            if (mapSumCaloriesPerDay.get(localDateForMeal) > caloriesPerDay) {
+                mapExceededDays.get(localDateForMeal).setValue(true);
+            }
             if (TimeUtil.isBetween(userMeal.getDateTime().toLocalTime(), startTime, endTime)) {
                 userMealWithExceeds.add(
                         new UserMealWithExceed(
                                 userMeal.getDateTime(),
                                 userMeal.getDescription(),
                                 userMeal.getCalories(),
-                                mapSumCalories.get(localDateForMeal) > caloriesPerDay
+                                mapExceededDays.get(localDateForMeal)
                         )
                 );
             }
         }
-
-        return userMealWithExceeds == null ? Collections.emptyList() : userMealWithExceeds;
+        return userMealWithExceeds;
     }
+
 }
 // Оцените Time complexity вашего алгоритма: моя оценка О(N) т.к. в решении задействованы foreach циклы по N элементам

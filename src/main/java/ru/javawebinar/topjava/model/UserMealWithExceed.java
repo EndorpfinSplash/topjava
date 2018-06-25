@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.model;
 
+import org.apache.commons.lang3.mutable.MutableBoolean;
+
 import java.time.LocalDateTime;
 
 public class UserMealWithExceed {
@@ -9,9 +11,9 @@ public class UserMealWithExceed {
 
     private final int calories;
 
-    private final boolean exceed;
+    private MutableBoolean exceed;
 
-    public UserMealWithExceed(LocalDateTime dateTime, String description, int calories, boolean exceed) {
+    public UserMealWithExceed(LocalDateTime dateTime, String description, int calories, MutableBoolean exceed) {
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
