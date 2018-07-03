@@ -1,9 +1,11 @@
 package ru.javawebinar.topjava.model;
 
+import ru.javawebinar.topjava.Entity;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class MealWithExceed {
+public class MealWithExceed extends Entity {
     private final LocalDateTime dateTime;
 
     private final String description;
@@ -34,7 +36,8 @@ public class MealWithExceed {
         return exceed;
     }
 
-    public MealWithExceed(LocalDateTime dateTime, String description, int calories, boolean exceed) {
+    public MealWithExceed(int id, LocalDateTime dateTime, String description, int calories, boolean exceed) {
+        super(id);
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
