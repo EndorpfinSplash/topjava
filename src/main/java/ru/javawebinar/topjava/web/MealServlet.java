@@ -30,7 +30,7 @@ public class MealServlet extends HttpServlet {
 
     public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public static List<MealWithExceed> getListMealExceeded() {
+    public static List<MealWithExceed> getListMealExceeded(ArrayList<Meal> mealList) {
         return MealsUtil.getFilteredWithExceeded( mealList, LocalTime.MIN, LocalTime.MAX, 2000);
     }
 
@@ -49,7 +49,7 @@ public class MealServlet extends HttpServlet {
             int mealId = Integer.parseInt(request.getParameter("mealId").trim());
             mealInMemoryDAO.delete(mealId);
             forwardJspDestination = LIST_MEAL;
-            request.setAttribute("mealListForJSP", getListMealExceeded());
+            request.setAttribute("mealListForJSP", getListMealExceeded(mealInMemoryDAO.findAll()));
         } else if (action.equalsIgnoreCase("edit")){
             forwardJspDestination = INSERT_OR_EDIT;
             int mealId = Integer.parseInt(request.getParameter("mealId").trim());
@@ -57,7 +57,7 @@ public class MealServlet extends HttpServlet {
             request.setAttribute("mealForEditJSP",meal);
         } else if (action.equalsIgnoreCase("listMeal")){
             forwardJspDestination = LIST_MEAL;
-            request.setAttribute("mealListForJSP", getListMealExceeded());
+            request.setAttribute("mealListForJSP", getListMealExceeded(mealInMemoryDAO.findAll()));
         } else {
             forwardJspDestination = INSERT_OR_EDIT;
         }
@@ -81,7 +81,7 @@ public class MealServlet extends HttpServlet {
             mealInMemoryDAO.update(new Meal(Integer.parseInt(mealId), localDateTime, mealDescription, mealCalories) );
         }
 
-        request.setAttribute("mealListForJSP", getListMealExceeded());
+        request.setAttribute("mealListForJSP", getListMealExceeded(mealInMemoryDAO.findAll()));
         request.getRequestDispatcher(LIST_MEAL).forward(request, response);
     }
 }

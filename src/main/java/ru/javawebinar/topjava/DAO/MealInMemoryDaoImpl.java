@@ -3,11 +3,12 @@ package ru.javawebinar.topjava.DAO;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.MealServlet;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealInMemoryDaoImpl extends AbstractDAO<Integer, Meal> {
     @Override
-    public List<Meal> findAll() {
+    public ArrayList<Meal> findAll() {
         return MealServlet.mealList;
     }
 

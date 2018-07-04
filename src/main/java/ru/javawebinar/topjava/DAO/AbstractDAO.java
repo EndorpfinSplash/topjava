@@ -2,11 +2,11 @@ package ru.javawebinar.topjava.DAO;
 
 import ru.javawebinar.topjava.model.Entity;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public abstract class AbstractDAO<K, T extends Entity> {
 
-    public abstract List<T> findAll();
+    public abstract ArrayList<T> findAll();
 
     public abstract T findEntityById(K id);
 
