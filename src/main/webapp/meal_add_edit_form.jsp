@@ -22,15 +22,7 @@
         type="text" name="calories"
         value="<c:out value="${mealForEditJSP.calories}" />"/> <br/>
 
-
-    <%--DOB : <input--%>
-        <%--type="text" name="dob"--%>
-        <%--value="<fmt:formatDate pattern="MM/dd/yyyy" value="${user.dob}" />"/> <br/>--%>
-    <%----%>
-    <%--Email : <input type="text" name="email"--%>
-                   <%--value="<c:out value="${user.email}" />"/> <br/> --%>
-
-    <input type="submit" value="Submit"/>
+    <input type="submit" value="Add/Edit meal"/>
 </form>
 
 </body>

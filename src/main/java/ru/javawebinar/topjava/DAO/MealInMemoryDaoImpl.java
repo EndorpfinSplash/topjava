@@ -4,7 +4,6 @@ import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.MealServlet;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MealInMemoryDaoImpl extends AbstractDAO<Integer, Meal> {
     @Override

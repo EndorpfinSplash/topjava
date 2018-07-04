@@ -22,20 +22,18 @@ import java.util.List;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public class MealServlet extends HttpServlet {
-    private static final Logger log = getLogger(MealServlet.class);
+    private static String INSERT_OR_EDIT = "/meal_add_edit_form.jsp";
+    private static String LIST_MEAL = "/meal.jsp";
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    private static final Logger log = getLogger(MealServlet.class);
     public static ArrayList<Meal> mealList = MealList.getMealList();
 
     AbstractDAO<Integer, Meal> mealInMemoryDAO = new MealInMemoryDaoImpl();
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
     public static List<MealWithExceed> getListMealExceeded(ArrayList<Meal> mealList) {
-        return MealsUtil.getFilteredWithExceeded( mealList, LocalTime.MIN, LocalTime.MAX, 2000);
+        return MealsUtil.getFilteredWithExceeded(mealList, LocalTime.MIN, LocalTime.MAX, 2000);
     }
-
-    private static String INSERT_OR_EDIT = "/meal_add_edit_form.jsp";
-    private static String LIST_MEAL = "/meal.jsp";
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,22 +42,26 @@ public class MealServlet extends HttpServlet {
         String forwardJspDestination;
         String action = request.getParameter("action");
         request.setAttribute("formatterForJSP", DATE_TIME_FORMATTER);
+        int mealId;
 
-        if (action.equalsIgnoreCase("delete")){
-            int mealId = Integer.parseInt(request.getParameter("mealId").trim());
-            mealInMemoryDAO.delete(mealId);
-            forwardJspDestination = LIST_MEAL;
-            request.setAttribute("mealListForJSP", getListMealExceeded(mealInMemoryDAO.findAll()));
-        } else if (action.equalsIgnoreCase("edit")){
-            forwardJspDestination = INSERT_OR_EDIT;
-            int mealId = Integer.parseInt(request.getParameter("mealId").trim());
-            Meal meal = mealInMemoryDAO.findEntityById(mealId);
-            request.setAttribute("mealForEditJSP",meal);
-        } else if (action.equalsIgnoreCase("listMeal")){
-            forwardJspDestination = LIST_MEAL;
-            request.setAttribute("mealListForJSP", getListMealExceeded(mealInMemoryDAO.findAll()));
-        } else {
-            forwardJspDestination = INSERT_OR_EDIT;
+        switch (action == null ? "default_action" : action) {
+            case "delete":
+                mealId = Integer.parseInt(request.getParameter("mealId").trim());
+                mealInMemoryDAO.delete(mealId);
+                response.sendRedirect("meal");
+                return;
+            case "edit":
+                mealId = Integer.parseInt(request.getParameter("mealId").trim());
+                forwardJspDestination = INSERT_OR_EDIT;
+                Meal meal = mealInMemoryDAO.findEntityById(mealId);
+                request.setAttribute("mealForEditJSP", meal);
+                break;
+            case "insert":
+                forwardJspDestination = INSERT_OR_EDIT;
+                break;
+            default:
+                forwardJspDestination = LIST_MEAL;
+                request.setAttribute("mealListForJSP", getListMealExceeded(mealInMemoryDAO.findAll()));
         }
 
         request.getRequestDispatcher(forwardJspDestination).forward(request, response);
@@ -68,6 +70,7 @@ public class MealServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setCharacterEncoding("UTF-8");
+        request.setAttribute("formatterForJSP", DATE_TIME_FORMATTER);
 
         String mealId = request.getParameter("mealid");
         String mealDescription = request.getParameter("mealDescription");
@@ -75,10 +78,10 @@ public class MealServlet extends HttpServlet {
         int mealCalories = Integer.parseInt(request.getParameter("calories"));
 
         if (mealId == null || mealId.isEmpty()) {
-            Meal meal = new Meal( localDateTime, mealDescription, mealCalories);
+            Meal meal = new Meal(localDateTime, mealDescription, mealCalories);
             mealInMemoryDAO.create(meal);
         } else {
-            mealInMemoryDAO.update(new Meal(Integer.parseInt(mealId), localDateTime, mealDescription, mealCalories) );
+            mealInMemoryDAO.update(new Meal(Integer.parseInt(mealId), localDateTime, mealDescription, mealCalories));
         }
 
         request.setAttribute("mealListForJSP", getListMealExceeded(mealInMemoryDAO.findAll()));
