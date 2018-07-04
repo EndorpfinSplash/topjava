@@ -24,16 +24,20 @@
         <%--<th>Exceed</th>--%>
     </tr>
     <c:forEach var="meal_record" items="${mealListForJSP}">
-    <tr bgcolor = ${meal_record.isExceed()?  "green": "red"} >
+    <tr bgcolor = ${meal_record.isExceed()?  "red": "green"} >
             <%--<td>${meal_record.getDateTime()}</td>--%>
         <td>${meal_record.getDateTimeForJSP()}</td>
         <td>${meal_record.getDescription()}</td>
         <td>${meal_record.getCalories()}</td>
+        <%--<td><c:out value="${meal_record.description}" /></td>--%>
             <%--<td>${num.isExceed()}</td>--%>
+        <td><a href="meal?action=edit&mealId= <c:out value="${meal_record.id}"/>">Update</a></td>
+        <td><a href="meal?action=delete&mealId=<c:out value="${meal_record.id}"/>">Delete</a></td>
     </tr>
     </c:forEach>
 
 </table>
+<p><a href="meal?action=insert">Add meal</a></p>
 
 </body>
 </html>

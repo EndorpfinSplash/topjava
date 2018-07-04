@@ -14,7 +14,8 @@ public class MealWithExceed extends Entity {
 
     private final boolean exceed;
 
-    final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-d HH:mm");
+    final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm");
+
 
     public LocalDateTime getDateTime() {
         return dateTime;
@@ -43,6 +44,7 @@ public class MealWithExceed extends Entity {
         this.calories = calories;
         this.exceed = exceed;
     }
+
 
     @Override
     public String toString() {
