@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,8 @@ public class MealServlet extends HttpServlet {
 
     AbstractDAO<Integer, Meal> mealInMemoryDAO = new MealInMemoryDaoImpl();
 
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     public static List<MealWithExceed> getListMealExceeded() {
         return MealsUtil.getFilteredWithExceeded( mealList, LocalTime.MIN, LocalTime.MAX, 2000);
     }
@@ -38,8 +41,9 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         log.debug("redirect to meals");
 
-        String forwardJspDestination = "";
+        String forwardJspDestination;
         String action = request.getParameter("action");
+        request.setAttribute("formatterForJSP", DATE_TIME_FORMATTER);
 
         if (action.equalsIgnoreCase("delete")){
             int mealId = Integer.parseInt(request.getParameter("mealId").trim());
@@ -57,12 +61,9 @@ public class MealServlet extends HttpServlet {
         } else {
             forwardJspDestination = INSERT_OR_EDIT;
         }
-//        request.setAttribute("mealListForJSP", mealWithExceedInMemoryDao.findAll());
 
         request.getRequestDispatcher(forwardJspDestination).forward(request, response);
-        //       response.sendRedirect("meal.jsp");
     }
-
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -70,18 +71,17 @@ public class MealServlet extends HttpServlet {
 
         String mealId = request.getParameter("mealid");
         String mealDescription = request.getParameter("mealDescription");
+        LocalDateTime localDateTime = LocalDateTime.parse(request.getParameter("mealLocalDateTime"), DATE_TIME_FORMATTER);
         int mealCalories = Integer.parseInt(request.getParameter("calories"));
 
         if (mealId == null || mealId.isEmpty()) {
-            Meal meal = new Meal(MealList.id_counter++, LocalDateTime.now(), mealDescription, mealCalories);
-            System.out.println(meal);
+            Meal meal = new Meal( localDateTime, mealDescription, mealCalories);
             mealInMemoryDAO.create(meal);
         } else {
-            mealInMemoryDAO.update(new Meal(Integer.parseInt(mealId.trim()), LocalDateTime.now(), mealDescription, mealCalories) );
+            mealInMemoryDAO.update(new Meal(Integer.parseInt(mealId), localDateTime, mealDescription, mealCalories) );
         }
 
         request.setAttribute("mealListForJSP", getListMealExceeded());
         request.getRequestDispatcher(LIST_MEAL).forward(request, response);
-
     }
 }

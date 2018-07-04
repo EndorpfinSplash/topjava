@@ -1,5 +1,7 @@
 package ru.javawebinar.topjava.model;
 
+import ru.javawebinar.topjava.util.MealList;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -12,13 +14,19 @@ public class Meal extends Entity {
 
     private final int calories;
 
+    public Meal( LocalDateTime dateTime, String description, int calories) {
+        super(MealList.id_counter++);
+        this.dateTime = dateTime;
+        this.description = description;
+        this.calories = calories;
+    }
+
     public Meal(int id, LocalDateTime dateTime, String description, int calories) {
         super(id);
         this.dateTime = dateTime;
         this.description = description;
         this.calories = calories;
     }
-
 
     public LocalDateTime getDateTime() {
         return dateTime;
