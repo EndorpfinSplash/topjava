@@ -1,6 +1,6 @@
 package ru.javawebinar.topjava.DAO;
 
-import ru.javawebinar.topjava.Entity;
+import ru.javawebinar.topjava.model.Entity;
 
 import java.util.List;
 
@@ -11,8 +11,6 @@ public abstract class AbstractDAO<K, T extends Entity> {
     public abstract T findEntityById(K id);
 
     public abstract boolean delete(K id);
-
-    public abstract boolean delete(T entity);
 
     public abstract boolean create(T entity);
 

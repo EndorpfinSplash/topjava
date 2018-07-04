@@ -24,9 +24,8 @@
         <%--<th>Exceed</th>--%>
     </tr>
     <c:forEach var="meal_record" items="${mealListForJSP}">
-    <tr bgcolor = ${meal_record.isExceed()?  "red": "green"} >
-            <%--<td>${meal_record.getDateTime()}</td>--%>
-        <td>${meal_record.getDateTimeForJSP()}</td>
+    <tr bgcolor = ${meal_record.isExceed()?  "#ff6461": "#8cff94"} >
+        <td>${meal_record.getDateTime().toString().replace('T',' ')}</td>
         <td>${meal_record.getDescription()}</td>
         <td>${meal_record.getCalories()}</td>
         <%--<td><c:out value="${meal_record.description}" /></td>--%>

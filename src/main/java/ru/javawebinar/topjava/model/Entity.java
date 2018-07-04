@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava;
+package ru.javawebinar.topjava.model;
 
 public abstract class Entity {
     private int id;

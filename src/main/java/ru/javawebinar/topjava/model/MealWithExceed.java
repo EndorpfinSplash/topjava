@@ -1,9 +1,6 @@
 package ru.javawebinar.topjava.model;
 
-import ru.javawebinar.topjava.Entity;
-
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class MealWithExceed extends Entity {
     private final LocalDateTime dateTime;
@@ -14,15 +11,8 @@ public class MealWithExceed extends Entity {
 
     private final boolean exceed;
 
-    final static DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm");
-
-
     public LocalDateTime getDateTime() {
         return dateTime;
-    }
-
-    public String getDateTimeForJSP() {
-        return dateTime.format(FORMATTER);
     }
 
     public String getDescription() {
@@ -44,7 +34,6 @@ public class MealWithExceed extends Entity {
         this.calories = calories;
         this.exceed = exceed;
     }
-
 
     @Override
     public String toString() {
