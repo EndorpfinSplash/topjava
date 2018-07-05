@@ -22,8 +22,9 @@ public class MealInMemoryDaoImpl extends AbstractDAO<Integer, Meal> {
     }
 
     @Override
-    public boolean create(Meal entity) {
-        return MealServlet.mealList.add(entity);
+    public Meal create(Meal entity) {
+        MealServlet.mealList.add(entity);
+        return entity;
     }
 
     @Override
