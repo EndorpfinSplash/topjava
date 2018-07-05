@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.dao;
+package ru.javawebinar.topjava.DAO;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.MealServlet;
