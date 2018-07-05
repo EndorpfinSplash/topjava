@@ -1,4 +1,4 @@
-package ru.javawebinar.topjava.DAO;
+package ru.javawebinar.topjava.dao;
 
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.web.MealServlet;
@@ -18,7 +18,7 @@ public class MealInMemoryDaoImpl extends AbstractDAO<Integer, Meal> {
 
     @Override
     public boolean delete(Integer id) {
-        return MealServlet.mealList.remove(id);
+        return MealServlet.mealList.remove(MealServlet.mealList.get(id));
     }
 
     @Override
