@@ -23,13 +23,14 @@
         <th>Calories</th>
     </tr>
     <c:forEach var="meal_record" items="${mealListForJSP}">
-    <tr bgcolor = ${meal_record.isExceed()?  "#ff6461": "#8cff94"} >
-        <td>${meal_record.getDateTime().format(formatterForJSP)}</td>
-        <td>${meal_record.getDescription()}</td>
-        <td>${meal_record.getCalories()}</td>
-        <td><a href="meal?action=edit&mealId= <c:out value="${meal_record.id}"/>">Update</a></td>
-        <td><a href="meal?action=delete&mealId=<c:out value="${meal_record.id}"/>">Delete</a></td>
-    </tr>
+        <jsp:useBean id="meal_record" scope="page" type="ru.javawebinar.topjava.model.MealWithExceed"/>
+        <tr bgcolor=${meal_record.isExceed()?  "#ff6461": "#8cff94"}>
+            <td>${meal_record.getDateTime().format(formatterForJSP)}</td>
+            <td>${meal_record.getDescription()}</td>
+            <td>${meal_record.calories)}</td>
+            <td><a href="meal?action=edit&mealId= <c:out value="${meal_record.id}"/>">Update</a></td>
+            <td><a href="meal?action=delete&mealId=<c:out value="${meal_record.id}"/>">Delete</a></td>
+        </tr>
     </c:forEach>
 
 </table>
