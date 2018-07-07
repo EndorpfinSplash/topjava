@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 @Repository
 public class InMemoryUserRepositoryImpl implements UserRepository {
@@ -43,7 +44,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public Collection<User> getAll() {
         log.info("getAll");
-        return repository.values();
+        return repository.values().stream().sorted().collect(Collectors.toSet());
     }
 
     @Override
