@@ -53,11 +53,12 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         if (email.isEmpty()) {
             return null;
         }
-        for (User user : repository.values()) {
+/*        for (User user : repository.values()) {
             if (user.getEmail().equals(email)) {
                 return user;
             }
-        }
-        return null;
+        }*/
+
+        return repository.values().stream().filter( user -> user.getEmail()==email).findFirst().get();
     }
 }
