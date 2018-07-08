@@ -13,6 +13,6 @@ public interface MealRepository {
 
     Collection<Meal> getAll();
 
-    Collection<Meal> getAllForUser(int userId);
+    Collection<Meal> getAll(int userId);
 
 }

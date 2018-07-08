@@ -3,11 +3,13 @@ package ru.javawebinar.topjava.repository.mock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
+import ru.javawebinar.topjava.model.AbstractBaseEntity;
+import ru.javawebinar.topjava.model.AbstractNamedEntity;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 
 import java.util.Collection;
-
+import java.util.Comparator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,6 +28,7 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
         repository.remove(id);
     }
 
+    @Override
     public User save(User user) {
         if (user.isNew()) {
             user.setId(counter.incrementAndGet());
@@ -44,7 +47,11 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
     @Override
     public Collection<User> getAll() {
         log.info("getAll");
-        return repository.values().stream().sorted().collect(Collectors.toSet());
+        return repository.values()
+                .stream()
+                .sorted(Comparator.comparing(AbstractNamedEntity::getName)
+                        .thenComparing(AbstractBaseEntity::getId))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -59,6 +66,6 @@ public class InMemoryUserRepositoryImpl implements UserRepository {
             }
         }*/
 
-        return repository.values().stream().filter( user -> user.getEmail().equalsIgnoreCase(email)).findFirst().get();
+        return repository.values().stream().filter(user -> user.getEmail().equalsIgnoreCase(email)).findFirst().get();
     }
 }
