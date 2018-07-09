@@ -4,6 +4,8 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.service.MealService;
+import ru.javawebinar.topjava.web.MealServlet;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 import ru.javawebinar.topjava.web.user.AdminRestController;
 
@@ -17,10 +19,14 @@ public class SpringMain {
             AdminRestController adminUserController = appCtx.getBean(AdminRestController.class);
             adminUserController.create(new User(null, "userName", "email@mail.ru", "password", Role.ROLE_ADMIN));
 
-            System.out.println();
+          /*  System.out.println();
             MealRestController mealRestController = appCtx.getBean(MealRestController.class);
             System.out.println();
-            mealRestController.getAll().stream().forEach(System.out::println);
+            mealRestController.getAll().stream().forEach(System.out::println);*/
+
+            System.out.println();
+            MealService mealService = appCtx.getBean(MealService.class);
+            System.out.println(mealService.get(1, 1));
         }
     }
 }

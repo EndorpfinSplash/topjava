@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -33,13 +34,38 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     }
 
     @Override
+    public Meal save(Meal meal, int userId) {
+        if (meal.getUserId() != userId) {
+            throw new NotFoundException("You can't save meal for other user");
+        }
+        return this.save(meal);
+    }
+
+    @Override
     public void delete(int id) {
         repository.remove(id);
     }
 
     @Override
+    public void delete(int id, int userId) {
+        if (repository.get(id).getUserId() != userId) {
+            throw new NotFoundException("You can't delete meal for other user");
+        }
+    }
+
+    @Override
     public Meal get(int id) {
         return repository.get(id);
+    }
+
+    @Override
+    public Meal get(int id, int userId) {
+        if (!repository.containsKey(id)) {
+            throw new NotFoundException("Such meal doesn't exists in the list");
+        } else if (repository.get(id).getUserId() != userId) {
+            throw new NotFoundException("You can't get meal for other user");
+        }
+        return this.get(id);
     }
 
     @Override

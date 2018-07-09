@@ -3,11 +3,13 @@ package ru.javawebinar.topjava.web.meal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
 import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
+import ru.javawebinar.topjava.web.SecurityUtil;
 
 
 import java.time.LocalDateTime;
@@ -27,43 +29,46 @@ public abstract class AbstractMealController {
 
     public Collection<MealWithExceed> getAll() {
         log.info("getAll");
-        return MealsUtil.getWithExceeded(service.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return MealsUtil.getWithExceeded(service.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
-    public Collection<MealWithExceed> getAll(int userId) {
-        log.info("getAll for user ID");
-        return MealsUtil.getWithExceeded(service.getAll(userId), MealsUtil.DEFAULT_CALORIES_PER_DAY);
-    }
+    public Collection<MealWithExceed> getAll(LocalDateTime dateTimeStart, LocalDateTime dateTimeEnd, LocalTime localTimeStart, LocalTime localTimeEnd) {
+        log.info("getAll with filter");
 
-    public Collection<MealWithExceed> getAll(int userId, LocalDateTime dateTimeStart, LocalDateTime dateTimeEnd) {
-        log.info("getAll for user ID with filter");
-
-        return this.getAll(userId).stream()
-                .filter(mealWithExceed1 -> DateTimeUtil.isBetween(mealWithExceed1.getDateTime(), dateTimeStart, dateTimeEnd))
-                .filter(mealWithExceed1 -> DateTimeUtil.isBetween(mealWithExceed1.getDateTime().toLocalTime(), dateTimeStart.toLocalTime(), dateTimeEnd.toLocalTime()))
+        return this.getAll().stream()
+                .filter(mealWithExceed1 -> DateTimeUtil.isBetween(
+                        mealWithExceed1.getDateTime(),
+                        dateTimeStart == null ? LocalDateTime.MIN : dateTimeStart,
+                        dateTimeEnd == null ? LocalDateTime.MAX : dateTimeEnd)
+                )
+                .filter(mealWithExceed1 -> DateTimeUtil.isBetween(
+                        mealWithExceed1.getDateTime().toLocalTime(),
+                        localTimeStart == null ? LocalTime.MIN : localTimeStart,
+                        localTimeEnd == null ? LocalTime.MAX : localTimeEnd)
+                )
                 .collect(Collectors.toList());
     }
 
     public Meal get(int id) {
         log.info("get {}", id);
-        return service.get(id);
+        return service.get(id, SecurityUtil.authUserId());
     }
 
     public Meal create(Meal meal) {
         log.info("create {}", meal);
         checkNew(meal);
-        return service.create(meal);
+        return service.create(meal, SecurityUtil.authUserId());
     }
 
     public void delete(int id) {
         log.info("delete {}", id);
-        service.delete(id);
+        service.delete(id, SecurityUtil.authUserId());
     }
 
-    public void update(Meal meal) {
+    public void update(Meal meal, int id) {
         log.info("update {} with id={}", meal);
-        //  assureIdConsistent(meal, id);
-        service.update(meal);
+        assureIdConsistent(meal, id);
+        service.update(meal, SecurityUtil.authUserId());
     }
 
 }
