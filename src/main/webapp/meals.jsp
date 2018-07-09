@@ -30,8 +30,8 @@
     </dl>
 
     <dl>
-        <dd>От времени:<input type="time" value="${meal.dateTime}" name="time_start_jsp" ></dd>
-        <dd>До времени:<input type="time" value="${meal.dateTime}" name="time_end_jsp" ></dd>
+        <dd>От времени:<input type="time"  name="time_start_jsp" ></dd>
+        <dd>До времени:<input type="time"  name="time_end_jsp" ></dd>
     </dl>
 
     <button type="submit">Отфильтровать</button>
