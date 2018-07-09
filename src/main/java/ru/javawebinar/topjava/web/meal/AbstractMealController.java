@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.web.meal;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.to.MealWithExceed;
@@ -12,9 +11,10 @@ import ru.javawebinar.topjava.util.MealsUtil;
 import ru.javawebinar.topjava.web.SecurityUtil;
 
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
@@ -32,20 +32,22 @@ public abstract class AbstractMealController {
         return MealsUtil.getWithExceeded(service.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
-    public Collection<MealWithExceed> getAll(LocalDateTime dateTimeStart, LocalDateTime dateTimeEnd, LocalTime localTimeStart, LocalTime localTimeEnd) {
+    public Collection<MealWithExceed> getAll(LocalDate dateTimeStart, LocalDate dateTimeEnd, LocalTime localTimeStart, LocalTime localTimeEnd) {
         log.info("getAll with filter");
 
         return this.getAll().stream()
                 .filter(mealWithExceed1 -> DateTimeUtil.isBetween(
-                        mealWithExceed1.getDateTime(),
-                        dateTimeStart == null ? LocalDateTime.MIN : dateTimeStart,
-                        dateTimeEnd == null ? LocalDateTime.MAX : dateTimeEnd)
+                        mealWithExceed1.getDateTime().toLocalDate(),
+                        dateTimeStart,
+                        dateTimeEnd
+                         )
                 )
                 .filter(mealWithExceed1 -> DateTimeUtil.isBetween(
                         mealWithExceed1.getDateTime().toLocalTime(),
-                        localTimeStart == null ? LocalTime.MIN : localTimeStart,
-                        localTimeEnd == null ? LocalTime.MAX : localTimeEnd)
+                        localTimeStart ,
+                        localTimeEnd )
                 )
+                .sorted(Comparator.comparing(MealWithExceed::getDateTime).reversed())
                 .collect(Collectors.toList());
     }
 

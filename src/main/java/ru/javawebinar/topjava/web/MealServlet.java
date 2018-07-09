@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -13,7 +14,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
@@ -57,6 +60,12 @@ public class MealServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
 
+        String localDateStartStr = request.getParameter("date_start_jsp");
+        String localDateEndStr = request.getParameter("date_end_jsp");
+        String localTimeStartStr = request.getParameter("time_start_jsp");
+        String localTimeEndStr = request.getParameter("time_end_jsp");
+
+
         switch (action == null ? "all" : action) {
             case "delete":
                 int id = getId(request);
@@ -75,9 +84,14 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
+                LocalDate localDateStart = localDateStartStr == null || localDateStartStr.isEmpty() ? LocalDate.MIN : LocalDate.parse(localDateStartStr);
+                LocalDate localDateEnd = localDateEndStr == null || localDateStartStr.isEmpty() ? LocalDate.MAX : LocalDate.parse(localDateEndStr);
+
+                LocalTime localTimeStart = localTimeStartStr== null || localTimeStartStr.isEmpty() ? LocalTime.MIN : LocalTime.parse(localTimeStartStr);
+                LocalTime localTimeEnd = localTimeStartStr== null || localTimeEndStr.isEmpty() ? LocalTime.MAX : LocalTime.parse(localTimeEndStr);
+
                 request.setAttribute("meals",
-//                        MealsUtil.getWithExceeded(repository.getAll(), MealsUtil.DEFAULT_CALORIES_PER_DAY));
-                        mealRestController.getAll());
+                        mealRestController.getAll(localDateStart, localDateEnd, localTimeStart, localTimeEnd));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }

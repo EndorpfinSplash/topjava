@@ -77,7 +77,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Collection<Meal> getAll(int userId) {
         Collection<Meal> userMealList =
-                repository.values().stream().filter(meal -> meal.getUserId() == userId).sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toSet());
+                this.getAll().stream().filter(meal -> meal.getUserId() == userId).collect(Collectors.toSet());
         return userMealList.isEmpty() ? null : userMealList;
     }
 }

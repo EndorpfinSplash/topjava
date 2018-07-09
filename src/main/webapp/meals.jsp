@@ -10,18 +10,36 @@
         .normal {
             color: green;
         }
-
         .exceeded {
             color: red;
         }
     </style>
 </head>
 <body>
+
+
+<h3><a href="index.html">Home</a></h3>
+<h2>Meals</h2>
+<a href="meals?action=create">Add Meal</a>
+<hr/>
+
+<form method="get" action="meals">
+    <dl>
+        <dd>От даты: <input type="date"  name="date_start_jsp" ></dd>
+        <dd>До даты: <input type="date"  name="date_end_jsp" ></dd>
+    </dl>
+
+    <dl>
+        <dd>От времени:<input type="time" value="${meal.dateTime}" name="time_start_jsp" ></dd>
+        <dd>До времени:<input type="time" value="${meal.dateTime}" name="time_end_jsp" ></dd>
+    </dl>
+
+    <button type="submit">Отфильтровать</button>
+    <button onclick="window.history.back()" type="button">Отменить</button>
+</form>
+
 <section>
-    <h3><a href="index.html">Home</a></h3>
-    <h2>Meals</h2>
-    <a href="meals?action=create">Add Meal</a>
-    <hr/>
+
     <table border="1" cellpadding="8" cellspacing="0">
         <thead>
         <tr>
@@ -48,6 +66,6 @@
             </tr>
         </c:forEach>
     </table>
-</section>
+ </section>
 </body>
 </html>
