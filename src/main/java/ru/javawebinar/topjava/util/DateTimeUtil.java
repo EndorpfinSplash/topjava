@@ -10,7 +10,7 @@ public class DateTimeUtil {
         return ldt == null ? "" : ldt.format(DATE_TIME_FORMATTER);
     }
 
-    public static <T extends Comparable> boolean isBetween(T checkedTime, T startTime, T endTime) {
+    public static <T extends Comparable<T>> boolean isBetween(T checkedTime, T startTime, T endTime) {
         return checkedTime.compareTo(startTime) >= 0 && checkedTime.compareTo(endTime) <= 0;
     }
 
