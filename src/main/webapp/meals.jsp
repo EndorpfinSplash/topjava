@@ -35,7 +35,7 @@
     </dl>
 
     <button type="submit">Отфильтровать</button>
-    <button onclick="window.history.back()" type="button">Отменить</button>
+    <button type="reset" onclick="location.href = 'meals'">Отменить</button>
 </form>
 
 <section>
