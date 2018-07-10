@@ -1,7 +1,6 @@
 package ru.javawebinar.topjava.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
@@ -9,12 +8,15 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Collection;
 
+import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
+
 
 @Service
 public class MealServiceImpl implements MealService {
 
     private MealRepository repository;
-   // @Qualifier("InMemoryMealRepositoryImpl")
+
+    // @Qualifier("InMemoryMealRepositoryImpl")
     @Autowired
     public MealServiceImpl(MealRepository repository) {
         this.repository = repository;
@@ -27,22 +29,17 @@ public class MealServiceImpl implements MealService {
 
     @Override
     public void delete(int id, int userId) throws NotFoundException {
-        repository.delete(id, userId);
+        checkNotFoundWithId(repository.delete(id, userId), id);
     }
 
     @Override
     public Meal get(int id, int userId) throws NotFoundException {
-        return repository.get(id, userId);
+        return checkNotFoundWithId(repository.get(id, userId), id);
     }
 
     @Override
     public void update(Meal meal, int userId) {
-        repository.save(meal,userId);
-    }
-
-    @Override
-    public Collection<Meal> getAll() {
-        return repository.getAll();
+        repository.save(meal, userId);
     }
 
     @Override

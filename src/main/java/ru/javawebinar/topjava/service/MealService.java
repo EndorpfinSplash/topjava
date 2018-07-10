@@ -15,8 +15,6 @@ public interface MealService {
 
     void update(Meal meal, int userId);
 
-    Collection<Meal> getAll();
-
     Collection<Meal> getAll(int userId);
 
 }

@@ -8,6 +8,7 @@ import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,7 +23,6 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
         MealsUtil.MEALS.forEach(this::save);
     }
 
-    @Override
     public Meal save(Meal meal) {
         if (meal.isNew()) {
             meal.setId(counter.incrementAndGet());
@@ -36,48 +36,52 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
     @Override
     public Meal save(Meal meal, int userId) {
         if (meal.getUserId() != userId) {
-            throw new NotFoundException("You can't save meal for other user");
+            return null;
         }
         return this.save(meal);
     }
 
-    @Override
-    public void delete(int id) {
-        repository.remove(id);
+    public boolean delete(int id) {
+        return repository.remove(id, repository.get(id));
     }
 
     @Override
-    public void delete(int id, int userId) {
+    public boolean delete(int id, int userId) {
+
         if (repository.get(id).getUserId() != userId) {
-            throw new NotFoundException("You can't delete meal for other user");
+            return false;
         }
+        return repository.remove(id, repository.get(id));
     }
 
-    @Override
     public Meal get(int id) {
         return repository.get(id);
     }
 
     @Override
     public Meal get(int id, int userId) {
-        if (!repository.containsKey(id)) {
-            throw new NotFoundException("Such meal doesn't exists in the list");
-        } else if (repository.get(id).getUserId() != userId) {
-            throw new NotFoundException("You can't get meal for other user");
+        Meal meal = repository.getOrDefault(id, null);
+        if (meal == null || userId != meal.getUserId()) {
+            return null;
         }
-        return this.get(id);
+        return meal;
     }
 
     @Override
-    public Collection<Meal> getAll() {
-        Collection<Meal> userMealList = repository.values().stream().sorted(Comparator.comparing(Meal::getDate).reversed()).collect(Collectors.toList());
+    public List<Meal> getAll() {
+        List<Meal> userMealList = repository.values().stream()
+                .sorted(Comparator.comparing(Meal::getDate).reversed())
+                .collect(Collectors.toList());
         return userMealList.isEmpty() ? null : userMealList;
     }
 
     @Override
-    public Collection<Meal> getAll(int userId) {
-        Collection<Meal> userMealList =
-                this.getAll().stream().filter(meal -> meal.getUserId() == userId).collect(Collectors.toSet());
+    public List<Meal> getAll(int userId) {
+        List<Meal> userMealList =
+                repository.values().stream()
+                        .filter(meal -> meal.getUserId() == userId)
+                        .sorted(Comparator.comparing(Meal::getDate).reversed())
+                        .collect(Collectors.toList());
         return userMealList.isEmpty() ? null : userMealList;
     }
 }

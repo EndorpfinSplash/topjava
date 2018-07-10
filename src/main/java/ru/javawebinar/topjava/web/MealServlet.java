@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.web.meal.MealRestController;
 
 import javax.servlet.ServletConfig;
@@ -42,7 +41,8 @@ public class MealServlet extends HttpServlet {
                 LocalDateTime.parse(request.getParameter("dateTime")),
                 request.getParameter("description"),
                 Integer.parseInt(request.getParameter("calories")),
-                SecurityUtil.authUserId());
+                null
+        );
 
         if (id.isEmpty()) {
             log.info("Create {}", meal);
@@ -74,7 +74,7 @@ public class MealServlet extends HttpServlet {
             case "create":
             case "update":
                 final Meal meal = "create".equals(action) ?
-                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000, SecurityUtil.authUserId()) :
+                        new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", 1000,null) :
                         mealRestController.get(getId(request));
                 request.setAttribute("meal", meal);
                 request.getRequestDispatcher("/mealForm.jsp").forward(request, response);
@@ -83,7 +83,7 @@ public class MealServlet extends HttpServlet {
             default:
                 log.info("getAll");
                 LocalDate localDateStart = localDateStartStr == null || localDateStartStr.isEmpty() ? LocalDate.MIN : LocalDate.parse(localDateStartStr);
-                LocalDate localDateEnd = localDateEndStr == null || localDateStartStr.isEmpty() ? LocalDate.MAX : LocalDate.parse(localDateEndStr);
+                LocalDate localDateEnd = localDateEndStr == null || localDateEndStr.isEmpty() ? LocalDate.MAX : LocalDate.parse(localDateEndStr);
 
                 LocalTime localTimeStart = localTimeStartStr== null || localTimeStartStr.isEmpty() ? LocalTime.MIN : LocalTime.parse(localTimeStartStr);
                 LocalTime localTimeEnd = localTimeStartStr== null || localTimeEndStr.isEmpty() ? LocalTime.MAX : LocalTime.parse(localTimeEndStr);
@@ -102,7 +102,7 @@ public class MealServlet extends HttpServlet {
 
     @Override
     public void destroy() {
-        super.destroy();
         appCtx.close();
+        super.destroy();
     }
 }
