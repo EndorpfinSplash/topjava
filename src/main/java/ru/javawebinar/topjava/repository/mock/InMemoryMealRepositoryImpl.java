@@ -3,10 +3,11 @@ package ru.javawebinar.topjava.repository.mock;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
+import ru.javawebinar.topjava.util.DateTimeUtil;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.util.exception.NotFoundException;
 
-import java.util.Collection;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -35,27 +36,18 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        if (meal.getUserId() != userId) {
-            return null;
-        }
         return this.save(meal);
-    }
-
-    public boolean delete(int id) {
-        return repository.remove(id, repository.get(id));
     }
 
     @Override
     public boolean delete(int id, int userId) {
 
-        if (repository.get(id).getUserId() != userId) {
+        Meal meal = repository.get(id);
+
+        if (meal == null || meal.getUserId() != userId) {
             return false;
         }
-        return repository.remove(id, repository.get(id));
-    }
-
-    public Meal get(int id) {
-        return repository.get(id);
+        return repository.remove(id, meal);
     }
 
     @Override
@@ -69,20 +61,28 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public List<Meal> getAll() {
-        List<Meal> userMealList = repository.values().stream()
+        return repository.values().stream()
                 .sorted(Comparator.comparing(Meal::getDate).reversed())
                 .collect(Collectors.toList());
-        return userMealList.isEmpty() ? null : userMealList;
     }
 
     @Override
-    public List<Meal> getAll(int userId) {
-        List<Meal> userMealList =
-                repository.values().stream()
-                        .filter(meal -> meal.getUserId() == userId)
-                        .sorted(Comparator.comparing(Meal::getDate).reversed())
-                        .collect(Collectors.toList());
-        return userMealList.isEmpty() ? null : userMealList;
+    public List<Meal> getAllForUser(int userId) {
+        return getAllForUser(userId,LocalDate.MIN, LocalDate.MAX, LocalTime.MIN, LocalTime.MAX);
+    }
+
+    @Override
+    public List<Meal> getAllForUser(int userId, LocalDate dateTimeStart, LocalDate dateTimeEnd, LocalTime localTimeStart, LocalTime localTimeEnd) {
+        return repository.values().stream()
+                .filter(meal -> userId==meal.getUserId())
+                .filter(meal -> DateTimeUtil.isBetween(
+                        meal.getDateTime().toLocalDate(),
+                        dateTimeStart, dateTimeEnd))
+                .filter(meal -> DateTimeUtil.isBetween(
+                        meal.getDateTime().toLocalTime(),
+                        localTimeStart, localTimeEnd))
+                .sorted(Comparator.comparing(Meal::getDate).reversed())
+                .collect(Collectors.toList());
     }
 }
 

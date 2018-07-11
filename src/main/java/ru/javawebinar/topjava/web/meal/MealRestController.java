@@ -16,10 +16,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static ru.javawebinar.topjava.util.ValidationUtil.assureIdConsistent;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNew;
+
 @Controller
 public class MealRestController {
 
@@ -28,27 +30,27 @@ public class MealRestController {
     @Autowired
     private MealService service;
 
-    public Collection<MealWithExceed> getAll() {
+    public List<Meal> getAll() {
         log.info("getAll");
-        return MealsUtil.getWithExceeded(service.getAll(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+        return service.getAllForUser(SecurityUtil.authUserId());
     }
 
-    public Collection<MealWithExceed> getAll(LocalDate dateTimeStart, LocalDate dateTimeEnd, LocalTime localTimeStart, LocalTime localTimeEnd) {
-        log.info("getAll with filter");
+    public List<MealWithExceed> getAllForUser() {
+        log.info("getAll");
+        return MealsUtil.getWithExceeded(service.getAllForUser(SecurityUtil.authUserId()), MealsUtil.DEFAULT_CALORIES_PER_DAY);
+    }
 
-        return this.getAll().stream()
-                .filter(mealWithExceed1 -> DateTimeUtil.isBetween(
-                        mealWithExceed1.getDateTime().toLocalDate(),
-                        dateTimeStart,
-                        dateTimeEnd
-                         )
-                )
-                .filter(mealWithExceed1 -> DateTimeUtil.isBetween(
-                        mealWithExceed1.getDateTime().toLocalTime(),
-                        localTimeStart ,
-                        localTimeEnd )
-                )
-                .collect(Collectors.toList());
+    public List<MealWithExceed> getAllForUser(LocalDate dateTimeStart, LocalDate dateTimeEnd, LocalTime localTimeStart, LocalTime localTimeEnd) {
+        log.info("getAll");
+
+        dateTimeStart = dateTimeStart == null ? LocalDate.MIN : dateTimeStart;
+        dateTimeEnd = dateTimeEnd == null ? LocalDate.MAX : dateTimeEnd;
+        localTimeStart = localTimeStart == null ? LocalTime.MIN : localTimeStart;
+        localTimeEnd = localTimeEnd == null ? LocalTime.MAX : localTimeEnd;
+
+        return MealsUtil.getWithExceeded(
+                service.getAllForUser(SecurityUtil.authUserId(), dateTimeStart, dateTimeEnd, localTimeStart, localTimeEnd),
+                MealsUtil.DEFAULT_CALORIES_PER_DAY);
     }
 
     public Meal get(int id) {

@@ -82,14 +82,14 @@ public class MealServlet extends HttpServlet {
             case "all":
             default:
                 log.info("getAll");
-                LocalDate localDateStart = localDateStartStr == null || localDateStartStr.isEmpty() ? LocalDate.MIN : LocalDate.parse(localDateStartStr);
-                LocalDate localDateEnd = localDateEndStr == null || localDateEndStr.isEmpty() ? LocalDate.MAX : LocalDate.parse(localDateEndStr);
+                LocalDate localDateStart = localDateStartStr == null || localDateStartStr.isEmpty() ? null : LocalDate.parse(localDateStartStr);
+                LocalDate localDateEnd = localDateEndStr == null || localDateEndStr.isEmpty() ? null : LocalDate.parse(localDateEndStr);
 
-                LocalTime localTimeStart = localTimeStartStr== null || localTimeStartStr.isEmpty() ? LocalTime.MIN : LocalTime.parse(localTimeStartStr);
-                LocalTime localTimeEnd = localTimeStartStr== null || localTimeEndStr.isEmpty() ? LocalTime.MAX : LocalTime.parse(localTimeEndStr);
+                LocalTime localTimeStart = localTimeStartStr== null || localTimeStartStr.isEmpty() ? null : LocalTime.parse(localTimeStartStr);
+                LocalTime localTimeEnd = localTimeStartStr== null || localTimeEndStr.isEmpty() ? null : LocalTime.parse(localTimeEndStr);
 
                 request.setAttribute("meals",
-                        mealRestController.getAll(localDateStart, localDateEnd, localTimeStart, localTimeEnd));
+                        mealRestController.getAllForUser(localDateStart, localDateEnd, localTimeStart, localTimeEnd));
                 request.getRequestDispatcher("/meals.jsp").forward(request, response);
                 break;
         }
