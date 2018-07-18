@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.repository.jdbc;
 
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -32,7 +33,20 @@ public class JdbcMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(Meal meal, int userId) {
-        return null;
+        MapSqlParameterSource map = new MapSqlParameterSource()
+                .addValue("user_id", userId)
+                .addValue("localdatetime", meal.getDate())
+                .addValue("description", meal.getDescription());
+
+        if (user.isNew()) {
+            Number newKey = insertMeal.execute(map);
+            user.setId(newKey.intValue());
+        } else if (namedParameterJdbcTemplate.update(
+                "UPDATE users SET name=:name, email=:email, password=:password, " +
+                        "registered=:registered, enabled=:enabled, calories_per_day=:caloriesPerDay WHERE id=:id", map) == 0) {
+            return null;
+        }
+        return meal;
     }
 
     @Override
