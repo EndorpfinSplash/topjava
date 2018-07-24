@@ -3,7 +3,6 @@ package ru.javawebinar.topjava.model;
 import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -45,10 +44,12 @@ public class Meal extends AbstractBaseEntity {
 
     @Column(name = "CALORIES", nullable = false, columnDefinition = "int default 0")
     @Range(min = 0)
+    @NotBlank
     private int calories;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_ID")
+    @NotNull
     private User user;
 
     public Meal() {
