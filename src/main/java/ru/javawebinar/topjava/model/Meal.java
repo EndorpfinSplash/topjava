@@ -13,11 +13,11 @@ import java.time.LocalTime;
 
 
 @NamedQueries({
-        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id and m.user=:user_id"),
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id and m.user.id=:user_id"),
         @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m ORDER BY m.dateTime desc"),
         @NamedQuery(name = Meal.GET_BETWEEN, query =
-                "SELECT m FROM Meal m where m.user = :user_id and m.dateTime between :start_time and :end_time ORDER BY m.dateTime desc"),
-        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m where m.id = :id and m.user= :user_id"),
+                "SELECT m FROM Meal m where m.user.id = :user_id and m.dateTime between :start_time and :end_time ORDER BY m.dateTime desc"),
+        @NamedQuery(name = Meal.GET, query = "SELECT m FROM Meal m where m.id = :id and m.user.id= :user_id"),
 })
 
 @Entity
