@@ -10,13 +10,14 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
     <!-- Change DB by comment/uncomment property-placeholder -->
-
+        <!--указано меторасположение конфигурационного файла -->
     <context:property-placeholder location="classpath:db/postgres.properties" system-properties-mode="OVERRIDE"/>
     <!--<context:property-placeholder location="classpath:db/hsqldb.properties" system-properties-mode="OVERRIDE"/>-->
 
     <context:component-scan base-package="ru.javawebinar.**.repository.jpa"/>
 
     <jdbc:initialize-database data-source="dataSource" enabled="${database.init}">
+        <!-- т.к здесь значеие стоит в ${} то это property - из файла свойств конфигурации будет выбрано значение jdbc.initLocation-->
         <jdbc:script location="classpath:db/${jdbc.initLocation}"/>
         <jdbc:script encoding="utf-8" location="classpath:db/populateDB.sql"/>
     </jdbc:initialize-database>
