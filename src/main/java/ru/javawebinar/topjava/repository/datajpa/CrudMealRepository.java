@@ -22,7 +22,7 @@ public interface CrudMealRepository extends JpaRepository<Meal, Integer> {
 
     @Override
     @Transactional
-    <S extends Meal> S save(S s);
+    Meal save(Meal meal);
 
     Optional<Meal> getByIdAndUserId(int id, int userId);
 
