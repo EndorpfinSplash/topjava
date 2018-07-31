@@ -2,6 +2,7 @@ package ru.javawebinar.topjava.service;
 
 import org.junit.AfterClass;
 import org.junit.Rule;
+import org.junit.rules.ExpectedException;
 import org.junit.rules.Stopwatch;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -55,6 +56,9 @@ public abstract class AbstractServiceTest {
                     results +
                     "\n---------------------------------");
         }
+
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
     }
 

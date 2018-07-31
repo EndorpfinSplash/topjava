@@ -30,9 +30,6 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @ActiveProfiles(resolver = ActiveDbProfileResolver.class)
 public abstract class AbstractMealServiceTest extends AbstractServiceTest {
 
-    @Rule
-    public ExpectedException thrown = ExpectedException.none();
-
    @Autowired
     private MealService service;
 
