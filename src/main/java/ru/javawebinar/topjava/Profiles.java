@@ -26,10 +26,4 @@ public class Profiles {
             }
         }
     }
-
-    public static String getRepositoryImplementation() {
-        return Profiles.REPOSITORY_IMPLEMENTATION;
-    }
-
-
 }

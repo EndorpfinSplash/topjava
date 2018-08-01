@@ -6,10 +6,18 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.javawebinar.topjava.Profiles;
 
+import java.time.LocalDateTime;
+
 @Repository
 @Profile(Profiles.POSTGRES_DB)
 public class PostgresJdbcMealRepoImpl extends AbstractJdbcMealRepositoryImpl {
+
     public PostgresJdbcMealRepoImpl(JdbcTemplate jdbcTemplate, NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         super(jdbcTemplate, namedParameterJdbcTemplate);
+    }
+
+    @Override
+    public LocalDateTime tuningDate(LocalDateTime date) {
+        return date;
     }
 }
