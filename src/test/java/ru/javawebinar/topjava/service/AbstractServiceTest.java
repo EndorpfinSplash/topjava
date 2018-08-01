@@ -38,6 +38,7 @@ public abstract class AbstractServiceTest {
             @Override
             protected void finished(long nanos, Description description) {
                 String result = String.format("\n%-25s %7d", description.getMethodName(), TimeUnit.NANOSECONDS.toMillis(nanos));
+                results.setLength(0);
                 results.append(result);
                 log.info(result + " ms\n");
             }
